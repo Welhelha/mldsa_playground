@@ -1,9 +1,5 @@
 //! Tests d'intégration ML-DSA pour le fork askar ciblé.
-use std::{
-    str::FromStr,
-    sync::Arc,
-    thread,
-};
+use std::{env, fs, str::FromStr, sync::Arc, thread};
 
 use askar_crypto::{
     alg::{AnyKey, AnyKeyCreate, KeyAlg},
@@ -60,9 +56,13 @@ fn generation_signing_and_signature_sizes_cover_all_variants() {
         let (pub_len, sig_len) = expected_sizes(alg);
         let key = Box::<AnyKey>::random_det(alg, b"generation test").unwrap();
         assert_eq!(key.to_public_bytes().unwrap().len(), pub_len);
-        let sig = key.create_signature(b"message", Some(sig_type(alg))).unwrap();
+        let sig = key
+            .create_signature(b"message", Some(sig_type(alg)))
+            .unwrap();
         assert_eq!(sig.len(), sig_len);
-        assert!(key.verify_signature(b"message", &sig, Some(sig_type(alg))).unwrap());
+        assert!(key
+            .verify_signature(b"message", &sig, Some(sig_type(alg)))
+            .unwrap());
     }
 }
 
@@ -71,8 +71,14 @@ fn seeded_key_import_and_signatures_are_deterministic() {
     for alg in ALGS {
         let a = key(alg);
         let b = Box::<AnyKey>::from_secret_bytes(alg, &SEED).unwrap();
-        assert_eq!(a.to_public_bytes().unwrap().as_ref(), b.to_public_bytes().unwrap().as_ref());
-        assert_eq!(a.create_signature(b"same", None).unwrap().as_ref(), b.create_signature(b"same", None).unwrap().as_ref());
+        assert_eq!(
+            a.to_public_bytes().unwrap().as_ref(),
+            b.to_public_bytes().unwrap().as_ref()
+        );
+        assert_eq!(
+            a.create_signature(b"same", None).unwrap().as_ref(),
+            b.create_signature(b"same", None).unwrap().as_ref()
+        );
     }
 }
 
@@ -81,7 +87,10 @@ fn random_key_generation_does_not_repeat_outputs() {
     for alg in ALGS {
         let a = Box::<AnyKey>::random(alg).unwrap();
         let b = Box::<AnyKey>::random(alg).unwrap();
-        assert_ne!(a.to_public_bytes().unwrap().as_ref(), b.to_public_bytes().unwrap().as_ref());
+        assert_ne!(
+            a.to_public_bytes().unwrap().as_ref(),
+            b.to_public_bytes().unwrap().as_ref()
+        );
     }
 }
 
@@ -108,7 +117,9 @@ fn invalid_signatures_and_other_keys_are_rejected() {
         let mut altered = sig.as_ref().to_vec();
         altered[0] ^= 1;
         assert!(!a.verify_signature(b"message", &altered, None).unwrap());
-        assert!(a.verify_signature(b"message", &altered[..altered.len() - 1], None).is_err());
+        assert!(a
+            .verify_signature(b"message", &altered[..altered.len() - 1], None)
+            .is_err());
     }
 }
 
@@ -116,7 +127,10 @@ fn invalid_signatures_and_other_keys_are_rejected() {
 fn signature_type_mismatch_is_rejected() {
     for alg in ALGS {
         let key = key(alg);
-        let wrong = match alg { KeyAlg::MlDsa44 => SignatureType::MLDSA65, _ => SignatureType::MLDSA44 };
+        let wrong = match alg {
+            KeyAlg::MlDsa44 => SignatureType::MLDSA65,
+            _ => SignatureType::MLDSA44,
+        };
         assert!(key.create_signature(b"x", Some(wrong)).is_err());
         let sig = key.create_signature(b"x", None).unwrap();
         assert!(key.verify_signature(b"x", &sig, Some(wrong)).is_err());
@@ -131,11 +145,31 @@ fn jwk_exports_have_expected_rfc9964_fields_and_encodings() {
         let secret = key.to_jwk_secret(None).unwrap();
         let secret_jwk = std::str::from_utf8(&secret).unwrap();
         let (pub_len, _) = expected_sizes(alg);
-        let expected_alg = format!("ML-DSA-{}", match alg { KeyAlg::MlDsa44 => 44, KeyAlg::MlDsa65 => 65, KeyAlg::MlDsa87 => 87, _ => unreachable!() });
+        let expected_alg = format!(
+            "ML-DSA-{}",
+            match alg {
+                KeyAlg::MlDsa44 => 44,
+                KeyAlg::MlDsa65 => 65,
+                KeyAlg::MlDsa87 => 87,
+                _ => unreachable!(),
+            }
+        );
         assert_eq!(jwk_member(&pub_jwk, "kty"), "AKP");
         assert_eq!(jwk_member(&pub_jwk, "alg"), expected_alg);
-        assert_eq!(URL_SAFE_NO_PAD.decode(jwk_member(&pub_jwk, "pub")).unwrap().len(), pub_len);
-        assert_eq!(URL_SAFE_NO_PAD.decode(jwk_member(secret_jwk, "priv")).unwrap().len(), 32);
+        assert_eq!(
+            URL_SAFE_NO_PAD
+                .decode(jwk_member(&pub_jwk, "pub"))
+                .unwrap()
+                .len(),
+            pub_len
+        );
+        assert_eq!(
+            URL_SAFE_NO_PAD
+                .decode(jwk_member(secret_jwk, "priv"))
+                .unwrap()
+                .len(),
+            32
+        );
         assert!(!jwk_member(&pub_jwk, "pub").contains('='));
     }
 }
@@ -149,8 +183,17 @@ fn public_and_secret_jwk_roundtrips_preserve_signature_and_thumbprint() {
         let secret = original.to_jwk_secret(None).unwrap();
         let private = Box::<AnyKey>::from_jwk(std::str::from_utf8(&secret).unwrap()).unwrap();
         assert!(public.verify_signature(b"round trip", &sig, None).unwrap());
-        assert_eq!(original.to_jwk_thumbprint(None).unwrap(), public.to_jwk_thumbprint(None).unwrap());
-        assert!(private.verify_signature(b"round trip", &private.create_signature(b"round trip", None).unwrap(), None).unwrap());
+        assert_eq!(
+            original.to_jwk_thumbprint(None).unwrap(),
+            public.to_jwk_thumbprint(None).unwrap()
+        );
+        assert!(private
+            .verify_signature(
+                b"round trip",
+                &private.create_signature(b"round trip", None).unwrap(),
+                None
+            )
+            .unwrap());
     }
 }
 
@@ -159,9 +202,16 @@ fn jwk_member_order_and_noncritical_unknown_fields_do_not_change_key() {
     let original = key(KeyAlg::MlDsa44);
     let pub_jwk = original.to_jwk_public(None).unwrap();
     let p = JwkParts::try_from_str(&pub_jwk).unwrap();
-    let reordered = format!(r#"{{"unknown":"x","pub":"{}","alg":"{}","kty":"AKP"}}"#, p.pub_key.as_ref(), p.alg.as_ref());
+    let reordered = format!(
+        r#"{{"unknown":"x","pub":"{}","alg":"{}","kty":"AKP"}}"#,
+        p.pub_key.as_ref(),
+        p.alg.as_ref()
+    );
     let imported = Box::<AnyKey>::from_jwk(&reordered).unwrap();
-    assert_eq!(original.to_jwk_thumbprint(None).unwrap(), imported.to_jwk_thumbprint(None).unwrap());
+    assert_eq!(
+        original.to_jwk_thumbprint(None).unwrap(),
+        imported.to_jwk_thumbprint(None).unwrap()
+    );
 }
 
 #[test]
@@ -172,7 +222,9 @@ fn malformed_jwk_fields_are_rejected_without_panicking() {
         r#"{"kty":"OKP","alg":"ML-DSA-44","pub":"AA"}"#,
         r#"{"kty":"AKP","alg":"NOPE","pub":"AA"}"#,
     ];
-    for jwk in cases { assert!(Box::<AnyKey>::from_jwk(jwk).is_err()); }
+    for jwk in cases {
+        assert!(Box::<AnyKey>::from_jwk(jwk).is_err());
+    }
 }
 
 #[test]
@@ -181,11 +233,13 @@ fn jwk_private_seed_must_match_public_key_and_be_exactly_32_bytes() {
     let pub_jwk = original.to_jwk_public(None).unwrap();
     let pub_value = jwk_member(&pub_jwk, "pub");
     let bad_seed = URL_SAFE_NO_PAD.encode([0x43; 32]);
-    let mismatch = format!(r#"{{"kty":"AKP","alg":"ML-DSA-44","pub":"{pub_value}","priv":"{bad_seed}"}}"#);
+    let mismatch =
+        format!(r#"{{"kty":"AKP","alg":"ML-DSA-44","pub":"{pub_value}","priv":"{bad_seed}"}}"#);
     assert!(Box::<AnyKey>::from_jwk(&mismatch).is_err());
     for len in [0, 31, 33] {
         let seed = URL_SAFE_NO_PAD.encode(vec![0x42; len]);
-        let jwk = format!(r#"{{"kty":"AKP","alg":"ML-DSA-44","pub":"{pub_value}","priv":"{seed}"}}"#);
+        let jwk =
+            format!(r#"{{"kty":"AKP","alg":"ML-DSA-44","pub":"{pub_value}","priv":"{seed}"}}"#);
         assert!(Box::<AnyKey>::from_jwk(&jwk).is_err());
     }
 }
@@ -195,17 +249,36 @@ fn thumbprints_are_stable_and_independent_of_private_and_unknown_members() {
     let key = key(KeyAlg::MlDsa65);
     let public = key.to_jwk_public(None).unwrap();
     let p = JwkParts::try_from_str(&public).unwrap();
-    let canonical = format!(r#"{{"alg":"{}","kty":"AKP","pub":"{}"}}"#, p.alg.as_ref(), p.pub_key.as_ref());
-    let mut h = Sha256::new(); h.update(canonical.as_bytes());
-    assert_eq!(key.to_jwk_thumbprint(None).unwrap(), URL_SAFE_NO_PAD.encode(h.finalize()));
-    let with_unknown = format!(r#"{{"x-extra":1,"kty":"AKP","alg":"{}","pub":"{}"}}"#, p.alg.as_ref(), p.pub_key.as_ref());
+    let canonical = format!(
+        r#"{{"alg":"{}","kty":"AKP","pub":"{}"}}"#,
+        p.alg.as_ref(),
+        p.pub_key.as_ref()
+    );
+    let mut h = Sha256::new();
+    h.update(canonical.as_bytes());
+    assert_eq!(
+        key.to_jwk_thumbprint(None).unwrap(),
+        URL_SAFE_NO_PAD.encode(h.finalize())
+    );
+    let with_unknown = format!(
+        r#"{{"x-extra":1,"kty":"AKP","alg":"{}","pub":"{}"}}"#,
+        p.alg.as_ref(),
+        p.pub_key.as_ref()
+    );
     let imported = Box::<AnyKey>::from_jwk(&with_unknown).unwrap();
-    assert_eq!(key.to_jwk_thumbprint(None).unwrap(), imported.to_jwk_thumbprint(None).unwrap());
+    assert_eq!(
+        key.to_jwk_thumbprint(None).unwrap(),
+        imported.to_jwk_thumbprint(None).unwrap()
+    );
 }
 
 #[test]
 fn key_algorithm_strings_roundtrip_canonically() {
-    for (alg, text) in [(KeyAlg::MlDsa44, "mldsa44"), (KeyAlg::MlDsa65, "mldsa65"), (KeyAlg::MlDsa87, "mldsa87")] {
+    for (alg, text) in [
+        (KeyAlg::MlDsa44, "mldsa44"),
+        (KeyAlg::MlDsa65, "mldsa65"),
+        (KeyAlg::MlDsa87, "mldsa87"),
+    ] {
         assert_eq!(KeyAlg::from_str(text).unwrap(), alg);
         assert_eq!(alg.as_str(), text);
     }
@@ -231,7 +304,9 @@ fn public_keys_and_shared_keys_work_across_threads() {
             key.verify_signature(b"thread", &sig, None).unwrap()
         }));
     }
-    for handle in handles { assert!(handle.join().unwrap()); }
+    for handle in handles {
+        assert!(handle.join().unwrap());
+    }
 }
 
 #[test]
@@ -258,7 +333,9 @@ fn fixed_seed_keys_keep_their_algorithm_after_type_erasure() {
 #[test]
 fn invalid_seed_lengths_are_rejected() {
     for alg in ALGS {
-        for len in [0, 31, 33] { assert!(Box::<AnyKey>::from_secret_bytes(alg, &vec![0; len]).is_err()); }
+        for len in [0, 31, 33] {
+            assert!(Box::<AnyKey>::from_secret_bytes(alg, &vec![0; len]).is_err());
+        }
     }
 }
 
@@ -316,4 +393,60 @@ fn unknown_jwk_members_current_behavior() {
     );
     let result = Box::<AnyKey>::from_jwk(&jwk);
     println!("unknown member accepted: {}", result.is_ok());
+}
+
+fn noble_cross_check_export() {
+    let mut results = Vec::new();
+    for alg in ALGS {
+        let key = key(alg);
+        let (pub_len, sig_len) = expected_sizes(alg);
+        let public_key = key.to_public_bytes().unwrap();
+        let signature = key
+            .create_signature(b"message", Some(sig_type(alg)))
+            .unwrap();
+        assert_eq!(public_key.len(), pub_len);
+        assert_eq!(signature.len(), sig_len);
+        results.push(format!(
+            "\"{}\":{{\"publicKey\":\"{}\",\"signature\":\"{}\"}}",
+            match alg {
+                KeyAlg::MlDsa44 => "ML-DSA-44",
+                KeyAlg::MlDsa65 => "ML-DSA-65",
+                KeyAlg::MlDsa87 => "ML-DSA-87",
+                _ => unreachable!(),
+            },
+            base64::engine::general_purpose::STANDARD.encode(public_key),
+            base64::engine::general_purpose::STANDARD.encode(signature)
+        ));
+    }
+    println!("NOBLE_CROSS_CHECK={{{}}}", results.join(","));
+}
+
+#[test]
+fn noble_cross_check_exports() {
+    noble_cross_check_export();
+}
+
+fn noble_cross_check_import(alg: KeyAlg) {
+    let Ok(path) = env::var("NOBLE_SIGNATURE_PATH") else {
+        return;
+    };
+    let signature = fs::read(path).unwrap();
+    assert!(key(alg)
+        .verify_signature(b"message", &signature, Some(sig_type(alg)))
+        .unwrap());
+}
+
+#[test]
+fn noble_cross_check_imports_ml_dsa_44() {
+    noble_cross_check_import(KeyAlg::MlDsa44);
+}
+
+#[test]
+fn noble_cross_check_imports_ml_dsa_65() {
+    noble_cross_check_import(KeyAlg::MlDsa65);
+}
+
+#[test]
+fn noble_cross_check_imports_ml_dsa_87() {
+    noble_cross_check_import(KeyAlg::MlDsa87);
 }

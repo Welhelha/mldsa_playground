@@ -1,0 +1,11 @@
+{
+  "name": "mldsa-playground-cross-check",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:noble": "node scripts/noble-cross-check.mjs"
+  },
+  "devDependencies": {
+    "@noble/post-quantum": "0.7.1"
+  }
+}
