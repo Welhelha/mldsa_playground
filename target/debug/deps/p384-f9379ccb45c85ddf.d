@@ -1,0 +1,11 @@
+/Users/martinevain/Documents/dev/mldsa_playground/target/debug/deps/p384-f9379ccb45c85ddf.d: /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/lib.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/ecdh.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/ecdsa.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/arithmetic.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/arithmetic/field.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/arithmetic/scalar.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/../README.md
+
+/Users/martinevain/Documents/dev/mldsa_playground/target/debug/deps/libp384-f9379ccb45c85ddf.rmeta: /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/lib.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/ecdh.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/ecdsa.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/arithmetic.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/arithmetic/field.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/arithmetic/scalar.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/../README.md
+
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/lib.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/ecdh.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/ecdsa.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/arithmetic.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/arithmetic/field.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/arithmetic/scalar.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/p384-0.14.0/src/../README.md:

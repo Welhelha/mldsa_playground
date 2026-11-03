@@ -1,0 +1,10 @@
+/Users/martinevain/Documents/dev/mldsa_playground/target/debug/deps/module_lattice-d0c2a6cc34dbdbfc.d: /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/lib.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/algebra.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/encoding.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/maybe_box.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/truncate.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/../README.md
+
+/Users/martinevain/Documents/dev/mldsa_playground/target/debug/deps/libmodule_lattice-d0c2a6cc34dbdbfc.rmeta: /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/lib.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/algebra.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/encoding.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/maybe_box.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/truncate.rs /Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/../README.md
+
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/lib.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/algebra.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/encoding.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/maybe_box.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/truncate.rs:
+/Users/martinevain/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/module-lattice-0.2.3/src/../README.md:

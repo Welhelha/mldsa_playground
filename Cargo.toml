@@ -1,0 +1,20 @@
+[package]
+name = "mldsa-playground"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["mldsa"]
+mldsa = ["askar-crypto/mldsa"]
+
+[dependencies]
+askar-crypto = { git = "https://github.com/Welhelha/askar", rev = "71e75cbc18fd0d29eec6253b1ef464a243df9eb8" }
+
+[dev-dependencies]
+base64 = "0.23.1"
+sha2 = "0.11.1"
+
+[[test]]
+name = "mldsa"
+path = "tests/mldsa.rs"
+required-features = ["mldsa"]
