@@ -8,9 +8,9 @@ default = ["mldsa"]
 mldsa = ["askar-crypto/mldsa"]
 
 [dependencies]
-askar-crypto = { git = "https://github.com/Welhelha/askar", rev = "71e75cbc18fd0d29eec6253b1ef464a243df9eb8" }
+askar-crypto = { git = "https://github.com/Welhelha/askar", rev = "561e1bc0579d3ef51f3163b447b366bd6abd9875" }
 
-# rev = "71e75cbc18fd0d29eec6253b1ef464a243df9eb8" for hedged and "6c39af1393bd568fa239ef4d2633c528f79d8bdf" for deterministic
+## rev = "561e1bc0579d3ef51f3163b447b366bd6abd9875" for hedged and "8f61827b4b5d40be81d1267456721dcc1868c198" for deterministic
 
 [dev-dependencies]
 base64 = "0.23.1"

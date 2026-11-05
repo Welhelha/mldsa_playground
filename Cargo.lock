@@ -40,7 +40,7 @@ dependencies = [
 [[package]]
 name = "askar-crypto"
 version = "0.4.0"
-source = "git+https://github.com/Welhelha/askar?rev=71e75cbc18fd0d29eec6253b1ef464a243df9eb8#71e75cbc18fd0d29eec6253b1ef464a243df9eb8"
+source = "git+https://github.com/Welhelha/askar?rev=561e1bc0579d3ef51f3163b447b366bd6abd9875#561e1bc0579d3ef51f3163b447b366bd6abd9875"
 dependencies = [
  "aead",
  "aes",
